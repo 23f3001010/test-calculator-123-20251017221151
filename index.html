@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/gGJfDfMDerAT99Sk1nj/EN8itylj9TXFfF6Ylx/EDpV1" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .calculator {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .display {
+            background: #222;
+            color: #fff;
+            text-align: right;
+            padding: 20px;
+            font-size: 2rem;
+        }
+        .btn {
+            font-size: 1.5rem;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator card">
+        <div id="display" class="display">0</div>
+        <div class="row g-0">
+            <button class="btn btn-light col-3" onclick="appendNumber(7)">7</button>
+            <button class="btn btn-light col-3" onclick="appendNumber(8)">8</button>
+            <button class="btn btn-light col-3" onclick="appendNumber(9)">9</button>
+            <button class="btn btn-warning col-3" onclick="chooseOperation('/')">÷</button>
+        </div>
+        <div class="row g-0">
+            <button class="btn btn-light col-3" onclick="appendNumber(4)">4</button>
+            <button class="btn btn-light col-3" onclick="appendNumber(5)">5</button>
+            <button class="btn btn-light col-3" onclick="appendNumber(6)">6</button>
+            <button class="btn btn-warning col-3" onclick="chooseOperation('*')">×</button>
+        </div>
+        <div class="row g-0">
+            <button class="btn btn-light col-3" onclick="appendNumber(1)">1</button>
+            <button class="btn btn-light col-3" onclick="appendNumber(2)">2</button>
+            <button class="btn btn-light col-3" onclick="appendNumber(3)">3</button>
+            <button class="btn btn-warning col-3" onclick="chooseOperation('-')">−</button>
+        </div>
+        <div class="row g-0">
+            <button class="btn btn-light col-6" onclick="appendNumber(0)">0</button>
+            <button class="btn btn-light col-3" onclick="appendNumber('.')">.</button>
+            <button class="btn btn-warning col-3" onclick="chooseOperation('+')">+</button>
+        </div>
+        <div class="row g-0">
+            <button class="btn btn-danger col-6" onclick="clearDisplay()">C</button>
+            <button class="btn btn-success col-6" onclick="compute()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let currentOperand = '';
+        let previousOperand = '';
+        let operation = undefined;
+
+        const displayElement = document.getElementById('display');
+
+        function clearDisplay() {
+            currentOperand = '';
+            previousOperand = '';
+            operation = undefined;
+            updateDisplay();
+        }
+
+        function appendNumber(number) {
+            if (number === '.' && currentOperand.includes('.')) return;
+            currentOperand = currentOperand.toString() + number.toString();
+            updateDisplay();
+        }
+        
+        function chooseOperation(op) {
+            if (currentOperand === '') return;
+            if (previousOperand !== '') {
+                compute();
+            }
+            operation = op;
+            previousOperand = currentOperand;
+            currentOperand = '';
+        }
+
+        function compute() {
+            let computation;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            if (isNaN(prev) || isNaN(current)) return;
+            switch (operation) {
+                case '+':
+                    computation = prev + current;
+                    break;
+                case '-':
+                    computation = prev - current;
+                    break;
+                case '*':
+                    computation = prev * current;
+                    break;
+                case '/':
+                    computation = prev / current;
+                    break;
+                default:
+                    return;
+            }
+            currentOperand = computation;
+            operation = undefined;
+            previousOperand = '';
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            displayElement.innerText = currentOperand || '0';
+        }
+
+        clearDisplay();
+    </script>
+</body>
+</html>
